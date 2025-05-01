@@ -1,6 +1,6 @@
 # 📦 JobEngine Laravel Package
 
-A modular, extensible import/export engine for Laravel apps that supports smart chunking, status tracking, event broadcasting, row-level failure logging, and clean frontend integration.
+A modular, extensible generic job, import/export engine for Laravel apps that supports smart chunking, status tracking, event broadcasting, row-level failure logging, and clean frontend integration.
 
 ---
 
@@ -117,8 +117,8 @@ Test coverage includes:
 
 ## 🧰 Requirements
 
-- Laravel 9+
-- PHP 8.1+
+- Laravel 10+
+- PHP 8.2+
 - Spatie Media Library (optional, for file storage)
 - Laravel Excel (required for file generation)
 
