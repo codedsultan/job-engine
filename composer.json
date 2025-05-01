@@ -1,0 +1,17 @@
+{
+    "name": "yourname/job-engine",
+    "autoload": {
+      "autoload": {
+            "psr-4": {
+                "Codedsultan\\ModularScaffolder\\": "src/"
+            }
+        }
+    },
+    "extra": {
+      "laravel": {
+        "providers": [
+          "Codedsultan\\JobEngine\\JobEngineServiceProvider"
+        ]
+      }
+    }
+  }

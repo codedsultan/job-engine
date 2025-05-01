@@ -1,0 +1,177 @@
+openapi: 3.0.3
+info:
+  title: Job Import/Export API
+  version: 1.0.0
+  description: OpenAPI specification for the import/export job engine, featuring dynamic job types like product_import and product_export.
+
+paths:
+  /api/job-types:
+    get:
+      summary: List available job types
+      tags: [Job Types]
+      responses:
+        '200':
+          description: Job types available
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    label:
+                      type: string
+                    type:
+                      type: string
+                    kind:
+                      type: string
+
+  /api/import/product_import:
+    post:
+      summary: Start a product import job
+      tags: [Import]
+      parameters:
+        - in: path
+          name: type
+          required: true
+          description: The job type key (e.g. product_import)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - data
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                      sku:
+                        type: string
+      responses:
+        '200':
+          description: Import job successfully queued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  job_id:
+                    type: string
+
+  /api/import/history:
+    get:
+      summary: Get import job history
+      tags: [Import]
+      parameters:
+        - in: query
+          name: type
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: status
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated list of import statuses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+
+  /api/export/queue:
+    post:
+      summary: Queue a product export job
+      tags: [Export]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - type
+              properties:
+                type:
+                  type: string
+                  example: product_export
+                columns:
+                  type: array
+                  items:
+                    type: string
+                  example: ["name", "sku"]
+                file_name:
+                  type: string
+                  example: products.xlsx
+                format:
+                  type: string
+                  enum: [xlsx, csv, pdf]
+                  default: xlsx
+      responses:
+        '200':
+          description: Export job successfully queued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  job_id:
+                    type: string
+
+  /api/export/list:
+    get:
+      summary: List export job statuses
+      tags: [Export]
+      responses:
+        '200':
+          description: List of export jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    status:
+                      type: string
+                    file:
+                      type: string
+
+  /api/export/download/{id}:
+    get:
+      summary: Download export file
+      tags: [Export]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Export job ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: File download
+        '404':
+          description: File not found
+
+
