@@ -106,8 +106,12 @@ Test coverage includes:
 
 ## 📚 Guides
 
-- [📥 Import Guide](docs/import-guide.md)
-- [📤 Export Guide](docs/export-guide.md)
+- [📥 Import Guide](stubs/docs/import-guide.md)
+- [📤 Export Guide](stubs/docs/export-guide.md)
+- [📊 Job Types](stubs/docs/job-types.md)
+- [📊 Architecture](stubs/docs/architecture.md)
+- [📊 Events](stubs/docs/events.md)
+- [📊 Example](stubs/docs/jobengine-example.md)
 
 ---
 
