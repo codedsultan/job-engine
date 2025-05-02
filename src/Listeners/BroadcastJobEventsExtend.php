@@ -2,16 +2,17 @@
 
 namespace CodedSultan\JobEngine\Listeners;
 
+use CodedSultan\JobEngine\Events\JobCompleted;
+use CodedSultan\JobEngine\Events\JobFailed;
+use CodedSultan\JobEngine\Events\JobProgressed;
 use App\Events\JobStatusUpdated;
-use CodedSultan\JobEngine\Support\BroadcastConfigHelper;
 
-class BroadcastJobEvents
+class BroadcastJobEvents extends BaseJobListener
 {
     public function handle(object $event): void
     {
-        $helper = app(BroadcastConfigHelper::class);
-
-        if (! $helper->enabled($event->type)) {
+        // Check if broadcasting is enabled for this job type
+        if (! $this->shouldBroadcast($event->type)) {
             return;
         }
 

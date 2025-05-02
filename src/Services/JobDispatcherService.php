@@ -26,8 +26,8 @@ class JobDispatcherService
         $jobClass = $meta['job'];
 
         $total = count($data);
-        $chunkSize = $chunkSize ?? config('jobs.chunking.default_chunk_size', 100);
-        $threshold = config('jobs.chunking.chunk_threshold', 250);
+        $chunkSize = $chunkSize ?? config('job-engine.chunking.default_chunk_size', 100);
+        $threshold = config('job-engine.chunking.chunk_threshold', 250);
         $strategy = $strategy ?? ($total > $threshold ? 'websocket' : 'polling');
 
         // Create job status record

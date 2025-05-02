@@ -21,6 +21,6 @@ abstract class AbstractJobFailure extends Model
 
     public function jobStatus()
     {
-        return $this->belongsTo(config('jobs.status_model'));
+        return $this->belongsTo(config('job-engine.status_model'));
     }
 }

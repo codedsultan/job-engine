@@ -1,44 +1,34 @@
 <?php
 
-namespace CodedSultan\JobEngine\Events;
+namespace App\Events;
 
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Queue\SerializesModels;
 
 class JobStatusUpdated implements ShouldBroadcast
 {
-    use SerializesModels;
-
-    public string $jobId;
-    public string $kind;
-    public string $type;
-    public string $status;
-    public int $processed;
-    public int $total;
-    public int $userId;
+    use InteractsWithSockets, SerializesModels;
 
     public function __construct(
-        string $jobId,
-        string $kind,
-        string $type,
-        string $status,
-        int $processed,
-        int $total,
-        int $userId
-    ) {
-        $this->jobId = $jobId;
-        $this->kind = $kind;
-        $this->type = $type;
-        $this->status = $status;
-        $this->processed = $processed;
-        $this->total = $total;
-        $this->userId = $userId;
-    }
+        public string $jobId,
+        public string $kind,
+        public string $type,
+        public string $status,
+        public int $processed,
+        public int $total,
+        public int $userId
+    ) {}
 
     public function broadcastOn(): PrivateChannel
     {
-        return new PrivateChannel('job-status.' . $this->userId);
+        return new PrivateChannel("job-status.{$this->userId}");
+    }
+
+    public function broadcastAs(): string
+    {
+        return 'JobStatusUpdated'; // Or make this dynamic
     }
 
     public function broadcastWith(): array
@@ -53,8 +43,10 @@ class JobStatusUpdated implements ShouldBroadcast
         ];
     }
 
-    public function broadcastAs(): string
+    public function broadcastVia(): array
     {
-        return 'JobStatusUpdated';
+        // 👇 Inject job type and resolve via helper
+        $helper = app(\CodedSultan\JobEngine\Support\BroadcastConfigHelper::class);
+        return [$helper->driver($this->type)];
     }
 }

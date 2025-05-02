@@ -1,27 +1,14 @@
 <?php
 
-namespace CodedSultan\JobEngine\Listeners;
+namespace App\Listeners\JobEngine;
 
-use App\Events\JobCompleted;
 use App\Models\User;
-use App\Notifications\JobCompletedNotification;
-use App\Services\JobRegistry;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Notification;
+use App\Notifications\JobCompletedNotification;
 use CodedSultan\JobEngine\Support\BroadcastConfigHelper;
-
 
 class NotifyJobOwner
 {
-    /**
-     * Create the event listener.
-     */
-    public function __construct()
-    {
-        //
-    }
-
     public function handle(object $event): void
     {
         $helper = app(BroadcastConfigHelper::class);
@@ -36,8 +23,6 @@ class NotifyJobOwner
         Notification::route('mail', $user->email)
             ->notify(new JobCompletedNotification($event->job));
 
-        if ($event->kind === 'import' && $event->type === 'user_import') {
-            // Email notification, metrics, or activity log
-        }
+        // Optional: add custom logging or notification logic here
     }
 }

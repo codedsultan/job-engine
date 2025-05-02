@@ -14,7 +14,7 @@ class JobRegistry
 
     public function __construct()
     {
-        $this->flat = $this->flatten(config('jobs.types', []));
+        $this->flat = $this->flatten(config('job-engine.types', []));
     }
 
     /**
@@ -75,10 +75,27 @@ class JobRegistry
         return $this->getProperty($type, 'exporter');
     }
 
-    public function shouldBroadcast(string $type): bool
+        public function shouldBroadcast(string $type): bool
     {
-        return (bool) $this->getProperty($type, 'broadcast', false);
+        return (bool) $this->getProperty($type, 'broadcast.enabled', false);
     }
+
+    public function getBroadcastDriver(string $type): string
+    {
+        return $this->getProperty($type, 'broadcast.driver', config('broadcasting.default'));
+    }
+
+    public function getBroadcastChannel(string $type, int $userId): string
+    {
+        $channel = $this->getProperty($type, 'broadcast.channel', 'job-status.{userId}');
+        return str_replace('{userId}', $userId, $channel);
+    }
+
+    public function getBroadcastEvent(string $type): string
+    {
+        return $this->getProperty($type, 'broadcast.event', 'JobStatusUpdated');
+    }
+
 
     /**
      * Flatten grouped kind => [type => meta] into type => [kind + meta].
@@ -95,4 +112,5 @@ class JobRegistry
 
         return $flat;
     }
+
 }

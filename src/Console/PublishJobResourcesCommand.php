@@ -4,7 +4,7 @@ namespace CodedSultan\JobEngine\Console;
 
 use Illuminate\Console\Command;
 
-class PublishJobResources extends Command
+class PublishJobResourcesCommand extends Command
 {
     protected $signature = 'job:publish {group=all}';
     protected $description = 'Publish JobEngine resources (import, sync, export, base, config, all)';

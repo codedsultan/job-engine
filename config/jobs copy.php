@@ -23,6 +23,16 @@ return [
                 'broadcast' => true,
             ],
         ],
+        'export' => [
+        'user_export' => [
+            'label' => 'User Export',
+            'model' => \App\Models\User::class,
+            'job' => \CodedSultan\JobEngine\Jobs\GenericExportChunkJob::class,
+            'exporter' => \App\Exporters\UserExporter::class,
+            'broadcast' => true,
+        ],
+    ],
+
         // 'export' => [...],
         // 'sync' => [...],
     ],
@@ -92,7 +102,11 @@ return [
 
     'strategy_threshold' => 1000,
 
-    'default_chunk_size' => 100,
-    'chunk_threshold' => 250, // If total data > 250, it will auto-batch
+    'chunking' => [
+        'default_chunk_size' => 100,
+        'chunk_threshold' => 250, // anything <= this runs as a single job
+    ],
+    // 'default_chunk_size' => 100,
+    // 'chunk_threshold' => 250, // If total data > 250, it will auto-batch
 
 ];

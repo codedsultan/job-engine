@@ -1,6 +1,6 @@
 <?php
 
-namespace CodedSultan\JobEngine\Listeners;
+namespace App\Listeners\JobEngine;
 
 use App\Events\JobStatusUpdated;
 use CodedSultan\JobEngine\Support\BroadcastConfigHelper;

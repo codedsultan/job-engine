@@ -1,6 +1,6 @@
 <?php
 
-namespace CodedSultan\JobEngine\Listeners;
+namespace App\Listeners\JobEngine;
 
 use Illuminate\Support\Facades\Log;
 use CodedSultan\JobEngine\Support\BroadcastConfigHelper;

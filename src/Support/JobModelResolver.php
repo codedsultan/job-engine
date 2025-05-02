@@ -17,7 +17,7 @@ class JobModelResolver
      */
     public static function resolve(string $type, string $kind, string $target = 'status'): string
     {
-        $models = config('jobs.models', []);
+        $models = config('job-engine.models', []);
 
         return $models['types'][$type][$target]
             ?? $models[$kind][$target]
