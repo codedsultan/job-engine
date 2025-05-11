@@ -18,12 +18,15 @@ class JobStatusUpdated implements ShouldBroadcast
         public string $status,
         public int $processed,
         public int $total,
-        public int $userId
+        public int|string $actorId,
+        public string $actorType
     ) {}
 
     public function broadcastOn(): PrivateChannel
     {
-        return new PrivateChannel("job-status.{$this->userId}");
+        // return new PrivateChannel("job-status.{$this->actorId}");
+        return new PrivateChannel("job-status.{$this->actorType}.{$this->actorId}");
+
     }
 
     public function broadcastAs(): string
@@ -38,6 +41,8 @@ class JobStatusUpdated implements ShouldBroadcast
             'kind' => $this->kind,
             'type' => $this->type,
             'status' => $this->status,
+            'successful' => $this->successful,
+            'failed' => $this->failed,
             'processed' => $this->processed,
             'total' => $this->total,
         ];

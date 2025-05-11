@@ -44,7 +44,7 @@ abstract class BaseImportJob implements ShouldQueue
                         'job_status_id' => $this->statusId,
                         'payload' => $row,
                         'message' => $validator->errors()->first(),
-                        'row_identifier' => $row['email'] ?? null,
+                        'row_identifier' => md5(json_encode($row)) //$row['email'] ?? null,
                     ]);
                     continue;
                 }

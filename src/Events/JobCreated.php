@@ -22,7 +22,8 @@ class JobCreated
         public mixed $job,
         public string $kind,
         public string $type,
-        public int $userId
+        public int|string $actorId,
+        public string $actorType
     ) {}
 
 

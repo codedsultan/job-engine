@@ -24,7 +24,9 @@ class JobCompleted
         public mixed $job,
         public string $kind,
         public string $type,
-        public int $userId,
+        // public string|int $userId,
+        public int|string $actorId,
+        public string $actorType,
         public ?string $message = null
     ) {}
 

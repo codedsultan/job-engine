@@ -7,7 +7,7 @@ use CodedSultan\JobEngine\Events\JobFailed;
 use CodedSultan\JobEngine\Events\JobProgressed;
 use App\Events\JobStatusUpdated;
 
-class BroadcastJobEvents extends BaseJobListener
+class BroadcastJobEventsExtend extends BaseJobListener
 {
     public function handle(object $event): void
     {
@@ -23,7 +23,9 @@ class BroadcastJobEvents extends BaseJobListener
             status: $event->job->status,
             processed: $event->job->processed,
             total: $event->job->total,
-            userId: $event->userId
+            actorId: $event->actorId,
+            actorType: $event->actorType
+
         ));
     }
 }

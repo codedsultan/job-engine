@@ -163,7 +163,9 @@ class JobEngineServiceProvider extends ServiceProvider
         // Optional singleton bindings
         $this->app->singleton(\CodedSultan\JobEngine\Services\JobRegistry::class);
         $this->app->singleton(\CodedSultan\JobEngine\Services\SynchronousJobService::class);
-        $this->app->singleton(BroadcastConfigHelper::class, fn ($app) => new BroadcastConfigHelper($app->make(JobRegistry::class)));
+        $this->app->singleton(BroadcastConfigHelper::class, fn ($app) => new BroadcastConfigHelper($app->make(\CodedSultan\JobEngine\Services\JobRegistry
+
+        ::class)));
 
     }
 

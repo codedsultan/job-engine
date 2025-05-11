@@ -17,7 +17,8 @@ class LogJobEvent
 
         Log::info("[{$event->kind}] Job {$event->type} {$event->job->id} updated", [
             'status' => $event->job->status,
-            'user_id' => $event->userId,
+            'user_id' => $event->actorId,
+            'user_type' => $event->actorType,
         ]);
     }
 }

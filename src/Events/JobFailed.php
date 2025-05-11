@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace CodedSultan\JobEngine\Events;
 
 use App\Models\JobStatus;
 use Illuminate\Broadcasting\Channel;
@@ -22,7 +22,8 @@ class JobFailed
         public mixed $job,
         public string $kind,
         public string $type,
-        public int $userId,
+        public int|string $actorId,
+        public string $actorType,
         public ?string $message = null
     ) {}
 

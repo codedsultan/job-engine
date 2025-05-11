@@ -113,4 +113,41 @@ class JobRegistry
         return $flat;
     }
 
+    public function getChunkJob(string $type): string
+    {
+        $kind = $this->getKind($type); // import or export
+
+        $jobClass = config("job-engine.types.{$kind}.{$type}.job");
+
+        if (! $jobClass || !class_exists($jobClass)) {
+            throw new \RuntimeException("Chunk job class not found for [{$type}] under kind [{$kind}].");
+        }
+
+        return $jobClass;
+    }
+
+
+    public function getAtomicJob(string $type): string
+    {
+        $kind = $this->getKind($type); // import or export
+
+        $jobClass = config("job-engine.types.{$kind}.{$type}.atomic_job");
+
+        if (! $jobClass || !class_exists($jobClass)) {
+            throw new \RuntimeException("Chunk job class not found for [{$type}] under kind [{$kind}].");
+        }
+
+        return $jobClass;
+    }
+
+
+    public function hasChunkJob(string $type): bool
+    {
+        $kind = $this->getKind($type);
+
+        $jobClass = config("job-engine.types.{$kind}.{$type}.job");
+
+        return $jobClass && class_exists($jobClass);
+    }
+
 }

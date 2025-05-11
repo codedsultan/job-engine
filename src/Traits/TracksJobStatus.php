@@ -2,44 +2,81 @@
 
 namespace CodedSultan\JobEngine\Traits;
 
+use CodedSultan\JobEngine\Services\JobStatusService;
 use CodedSultan\JobEngine\Support\JobModelResolver;
-
+use Illuminate\Database\Eloquent\Relations\Relation;
+use CodedSultan\JobEngine\Models\AbstractJobStatus;
+use Illuminate\Database\Eloquent\Model;
 trait TracksJobStatus
 {
-    protected object $status;
+    protected array $statusCache = [];
 
-    public function beginJob(int $userId, string $type, string $kind = 'import', int $total = 0, string $strategy = 'polling'): void
+    protected function jobStatusService(): JobStatusService
     {
+        return app(JobStatusService::class);
+    }
+
+    public function beginJob(
+        object $actor,
+        string $type,
+        string $kind = 'import',
+        int $total = 0,
+        string $strategy = 'polling'
+    ): void {
         $model = JobModelResolver::resolve($type, $kind, 'status');
 
-        $this->status = $model::create([
-            'user_id' => $userId,
-            'kind' => $kind,
-            'type' => $type,
-            'total' => $total,
-            'processed' => 0,
-            'status' => 'processing',
-            'strategy' => $strategy,
+        /** @var AbstractJobStatus $status */
+        $status = $model::create([
+            'actor_id'   => $actor->getKey(),
+            'actor_type' => array_search(get_class($actor), Relation::morphMap(), true),
+            'kind'       => $kind,
+            'type'       => $type,
+            'total'      => $total,
+            'processed'  => 0,
+            'status'     => 'processing',
+            'strategy'   => $strategy,
         ]);
+
+        $this->statusCache[$status->getKey()] = $status;
     }
 
-    public function incrementProcessed(int $count = 1): void
+    protected function resolveStatus(string $jobStatusId): AbstractJobStatus|Model
+
     {
-        $this->status?->increment('processed', $count);
+        if (!isset($this->statusCache[$jobStatusId])) {
+            $this->statusCache[$jobStatusId] = $this->jobStatusService()->resolve($jobStatusId,$this->type,$this->kind);
+        }
+
+        return $this->statusCache[$jobStatusId];
     }
 
-    public function failJob(string $message = 'Job failed'): void
+    public function incrementSuccess(string $jobStatusId): void
     {
-        $this->status?->update(['status' => 'failed', 'message' => $message]);
+        $this->jobStatusService()->markSuccess($this->resolveStatus($jobStatusId));
     }
 
-    public function completeJob(string $message = 'Job completed'): void
+    public function incrementFailure(string $jobStatusId): void
     {
-        $this->status?->update(['status' => 'completed', 'message' => $message]);
+        $this->jobStatusService()->markFailure($this->resolveStatus($jobStatusId));
     }
 
-    public function getJobStatus(): ?object
+    public function decrementFailure(string $jobStatusId): void
     {
-        return $this->status ?? null;
+        $this->resolveStatus($jobStatusId)->decrement('failed');
+    }
+
+    public function completeJob(string $jobStatusId, string $message = 'Job completed'): void
+    {
+        $this->jobStatusService()->complete($this->resolveStatus($jobStatusId), $message);
+    }
+
+    public function failJob(string $jobStatusId, string $message = 'Job failed'): void
+    {
+        $this->jobStatusService()->fail($this->resolveStatus($jobStatusId), $message);
+    }
+
+    public function getJobStatus(string $jobStatusId):  AbstractJobStatus|Model
+    {
+        return $this->resolveStatus($jobStatusId);
     }
 }

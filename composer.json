@@ -1,5 +1,5 @@
 {
-    "name": "codedsultan/jobengine",
+    "name": "codedsultan/job-engine",
     "description": "A Laravel package for chunked data import/export with real-time progress tracking and job status management.",
     "type": "library",
     "license": "MIT",
@@ -13,7 +13,7 @@
         "php": "^8.1",
         "illuminate/support": "^10.0|^11.0|^12.0",
         "maatwebsite/excel": "^3.1",
-        "spatie/laravel-medialibrary": "^10.0"
+        "spatie/laravel-medialibrary": "^10.0|^11.0|^12.0"
     },
     "require-dev": {
         "orchestra/testbench": "^8.0"

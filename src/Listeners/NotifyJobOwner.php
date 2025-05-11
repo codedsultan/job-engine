@@ -30,11 +30,17 @@ class NotifyJobOwner
             return;
         }
 
-        $user = User::find($event->userId);
-        if (! $user) return;
+        // $user = User::find($event->userId);
+        // if (! $user) return;
 
-        Notification::route('mail', $user->email)
-            ->notify(new JobCompletedNotification($event->job));
+        $actorClass = $event->actorType;
+        $actor = $actorClass::find($event->actorId);
+
+        if (! $actor || ! method_exists($actor, 'routeNotificationFor')) {
+            return;
+        }
+        // Notification::route('mail', $user->email)
+        //     ->notify(new JobCompletedNotification($event->job));
 
         if ($event->kind === 'import' && $event->type === 'user_import') {
             // Email notification, metrics, or activity log
